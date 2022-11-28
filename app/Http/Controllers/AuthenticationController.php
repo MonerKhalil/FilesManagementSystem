@@ -13,6 +13,7 @@ class AuthenticationController extends Controller
 
     public function __construct()
     {
+        $this->middleware(["admin.guest"])->only("Register");
         $this->middleware(["auth:user"])->only(["Logout","MyData"]);
     }
 
@@ -28,11 +29,17 @@ class AuthenticationController extends Controller
             "password" => ["required","min:8"],
             "role" => ["nullable","string",Rule::in([Role::Admin->value,Role::User->value])],
         ]);
+        $role = Role::User->value;
+        $user = auth("user")->user();
+        if (!is_null($user)){
+            $role = ($user->role===Role::Admin->value) && ($request->has("role")) ?
+                $request->role : Role::User;
+        }
         $user = User::create([
             "name" => $request->name,
             "email" => $request->email,
             "password" => password_hash($request->password,PASSWORD_DEFAULT),
-            "role" => $request->role ?? Role::User->value
+            "role" => $role
         ]);
         return MyApp::Json()->dataHandle($user->getWithNewToken(),"user");
     }

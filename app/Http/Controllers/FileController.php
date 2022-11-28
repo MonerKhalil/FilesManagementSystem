@@ -53,7 +53,7 @@ class FileController extends Controller
     {
         $request->validate($this->rules->onlyKey(["id_file"],true));
         $file = File::where("id",$request->id_file)->first();
-        $this->authorize("deleteFile",$file);
+        $this->authorize("delete_file",$file);
         if ($file->CheckisBooking()){
             return MyApp::Json()->errorHandle("file","the File current is booking .");
         }

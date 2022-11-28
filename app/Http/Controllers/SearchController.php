@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\MyApplication\Services\Search\SearchFactory;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class SearchController extends Controller
 {
@@ -25,7 +26,7 @@ class SearchController extends Controller
                 ->createSearchUser()->getDate($request, $request->name,$paginate),
             "group" => $this->searchFactory
                 ->createSearchGroup()->getDate($request, $request->name,$paginate),
-            default => $this->searchFactory->getDate($request, $request->name,$paginate),
+            default => throw new NotFoundHttpException(""),
         };
     }
 

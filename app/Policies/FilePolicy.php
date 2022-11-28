@@ -29,7 +29,7 @@ class FilePolicy
 
     public function delete_file(User $user,File $file): bool
     {
-        return ($user->id == $file->id_user) || ($user->isAdmin());
+        return $this->is_owner_file($user,$file);
     }
 
 }

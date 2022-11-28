@@ -14,6 +14,7 @@ Route::prefix("filemanagement")->group(function (){
         Route::post("login","Login");
         Route::delete("logout","Logout");
     });
+
     Route::prefix("group")->group(function (){
         Route::controller(GroupController::class)->group(function (){
             Route::get("all","All");
@@ -35,7 +36,7 @@ Route::prefix("filemanagement")->group(function (){
     });
     Route::prefix("file")->controller(FileController::class)->group(function (){
         Route::get("show","ShowMyFiles");
-        Route::post("add","CreateFile");
+        Route::post("create","CreateFile");
         Route::delete("delete","DeleteFile");
     });
     Route::get("search/{type}",[SearchController::class,"Search"]);

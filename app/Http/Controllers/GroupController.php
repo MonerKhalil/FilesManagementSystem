@@ -14,7 +14,7 @@ class GroupController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(["auth:user"]);
+        $this->middleware(["auth:user"])->except("All");
         $this->rules = new GroupRuleValidation();
     }
 
@@ -25,15 +25,17 @@ class GroupController extends Controller
 
     public function ShowMyGroups(): JsonResponse
     {
-        $groups = Group::with("files")->where("id_user",auth()->id())->get();
-        return MyApp::Json()->dataHandle($groups,"groups");
+        return MyApp::Json()->dataHandle(Group::where("id_user",auth()->id())->get(),"groups");
     }
 
     public function ShowFilesGroup(Request $request): JsonResponse
     {
         $request->validate($this->rules->onlyKey(["id_group"]));
-        $groups = Group::with("files")->where("id",$request->id_group)->first();
-        return MyApp::Json()->dataHandle($groups,"group");
+        $group = Group::with(["files"=>function($q){
+            return $q->with("userBookings")->get();
+        },])->where("id",$request->id_group)->first();
+        $this->authorize("show_files_in_group",$group);
+        return MyApp::Json()->dataHandle($group,"group");
     }
 
     public function CreateGroup(Request $request): JsonResponse
@@ -47,16 +49,6 @@ class GroupController extends Controller
         return MyApp::Json()->dataHandle($group,"group");
     }
 
-//    public function UpdateGroup(Request $request){
-//        $request->validate($this->rules->rules(true));
-//        $group = Group::where("id",$request->id_group)->first();
-//        $group->update([
-//            "name" => $request->name ?? $group->name,
-//            "type" => $request->type ?? $group->type,
-//        ]);
-//        return MyApp::Json()->dataHandle($group,"group");
-//    }
-
     public function DeleteGroup(Request $request): JsonResponse
     {
         $request->validate($this->rules->onlyKey(["id_group"]));
@@ -68,5 +60,15 @@ class GroupController extends Controller
         }
         return MyApp::Json()->errorHandle("group","You cannot delete this group because it contains a non-free file .");
     }
+
+//    public function UpdateGroup(Request $request){
+//        $request->validate($this->rules->rules(true));
+//        $group = Group::where("id",$request->id_group)->first();
+//        $group->update([
+//            "name" => $request->name ?? $group->name,
+//            "type" => $request->type ?? $group->type,
+//        ]);
+//        return MyApp::Json()->dataHandle($group,"group");
+//    }
 
 }
