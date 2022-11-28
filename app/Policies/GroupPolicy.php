@@ -33,9 +33,9 @@ class GroupPolicy
         return ($group->users()->where("id_user",$user->id)->exists());
     }
 
-    public function add_delete_file_to_group(User $user,Group $group): bool
+    public function add_file_to_group(User $user,Group $group): bool
     {
-        return $this->is_owner_group($user,$group) || $this->user_in_group($user,$group);
+        return $this->is_owner_group($user,$group) || $this->user_in_group($user,$group) || $group->isPublic();
     }
 
     public function add_delete_users(User $user,Group $group): bool

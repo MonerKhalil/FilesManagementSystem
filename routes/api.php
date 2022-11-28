@@ -35,6 +35,7 @@ Route::prefix("filemanagement")->group(function (){
         });
     });
     Route::prefix("file")->controller(FileController::class)->group(function (){
+        Route::get("all","All");
         Route::get("show","ShowMyFiles");
         Route::post("create","CreateFile");
         Route::delete("delete","DeleteFile");

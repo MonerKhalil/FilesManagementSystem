@@ -23,31 +23,26 @@ class ProcessGroupController extends Controller
     {
         $request->validate($this->rules->onlyKey(["id_group","id_file"],true));
         $file = File::where("id",$request->id_file)->first();
+        $this->authorize("is_owner_file",$file);
         $group = Group::query()->where("id",$request->id_group)->first();
-        if ( ($this->authorize("is_owner_file",$file)->allowed()
-        && $this->authorize("add_delete_file_to_group",$group)->allowed()) || auth()->user()->isAdmin()){
-            DB::transaction(function () use ($file,$group){
-                $file->groups()->syncWithoutDetaching($group->id);
-            });
-            return MyApp::Json()->dataHandle("Successfully add file to group","message");
-        }
-        throw new AccessDeniedHttpException("");
+        $this->authorize("add_file_to_group",$group);
+        DB::transaction(function () use ($file,$group){
+            $file->groups()->syncWithoutDetaching($group->id);
+        });
+        return MyApp::Json()->dataHandle("Successfully add file to group","message");
     }
 
     public function DeleteFileinGroup(Request $request): JsonResponse
     {
         $request->validate($this->rules->onlyKey(["id_group","id_file"],true));
         $file = File::where("id",$request->id_file)->first();
-        $group = Group::query()->where("id",$request->id_group)->first();
-        if ( ($this->authorize("is_owner_file",$file)->allowed()
-                && $this->authorize("add_delete_file_to_group",$group)->allowed()) || auth()->user()->isAdmin()){
-
-            DB::transaction(function () use ($file,$group){
-                $file->groups()->detach($group->id);
-            });
-            return MyApp::Json()->dataHandle("Successfully delete file From group","message");
-        }
-        throw new AccessDeniedHttpException("");
+        $this->authorize("is_owner_file",$file);
+//        $group = Group::query()->where("id",$request->id_group)->first();
+//        $this->authorize("add_file_to_group",$group);
+        DB::transaction(function () use ($file,$request){
+            $file->groups()->detach($request->id_group);
+        });
+        return MyApp::Json()->dataHandle("Successfully delete file From group","message");
     }
 
     public function AddUserstoGroup(Request $request): JsonResponse

@@ -15,6 +15,7 @@ class GroupController extends Controller
     public function __construct()
     {
         $this->middleware(["auth:user"])->except("All");
+        $this->middleware(["multi.auth:admin"])->only("All");
         $this->rules = new GroupRuleValidation();
     }
 

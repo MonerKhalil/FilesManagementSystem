@@ -69,4 +69,9 @@ class Group extends Model
             ->whereIn("id_file",$myfiles)->exists();
     }
 
+    public function isPublic(): bool
+    {
+        return $this->type === "public";
+    }
+
 }

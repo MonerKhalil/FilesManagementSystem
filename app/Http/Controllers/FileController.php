@@ -14,7 +14,14 @@ class FileController extends Controller
     public function __construct()
     {
         $this->middleware(["auth:user"]);
+        $this->middleware(["multi.auth:admin"])->only("All");
         $this->rules = new FileRuleValidation();
+    }
+
+    public function All(): JsonResponse
+    {
+        return MyApp::Json()->dataHandle(File::with("userBookings")->get(),"groups");
+
     }
 
     public function ShowMyFiles(): JsonResponse
