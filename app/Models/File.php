@@ -24,7 +24,7 @@ class File extends Model
             "id_user",
             "id",
             "id"
-        )->select(["users.id","users.name"]);
+        )->select(["users.id","users.name"])->whereNull("user_files.deleted_at");
     }
 
     public function groups(){
@@ -36,8 +36,9 @@ class File extends Model
         );
     }
 
-    public function CheckisBooking(){
-        return !is_null($this->userBookings()->first());
+    public function CheckisBooking(): bool
+    {
+        return $this->userBookings()->exists();
     }
 
 }

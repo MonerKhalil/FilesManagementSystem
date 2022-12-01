@@ -52,10 +52,10 @@ class Json
     /**
      * @param string $name
      * @param mixed $messageError
-     * @param int $code
+     * @param $code
      * @return JsonResponse
      */
-    public function errorHandle(string $name, mixed $messageError,int $code = 400): JsonResponse
+    public function errorHandle(string $name, mixed $messageError,$code = 400): JsonResponse
     {
         $code = ($code == 0) ? 400 : $code;
         return response()->json([

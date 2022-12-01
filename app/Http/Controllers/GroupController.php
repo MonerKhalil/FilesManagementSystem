@@ -3,18 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Models\Group;
+use App\Models\User;
 use App\MyApplication\MyApp;
-use App\MyApplication\RuleValidate;
 use App\MyApplication\Services\GroupRuleValidation;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class GroupController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(["auth:user"])->except("All");
+        $this->middleware(["auth:user"]);
         $this->middleware(["multi.auth:admin"])->only("All");
         $this->rules = new GroupRuleValidation();
     }
@@ -22,6 +21,11 @@ class GroupController extends Controller
     public function All(): JsonResponse
     {
         return MyApp::Json()->dataHandle(Group::all(),"groups");
+    }
+
+    public function ShowGroupsIn(): JsonResponse
+    {
+        return MyApp::Json()->dataHandle(User::where("id",auth()->id())->first()->userGroups,"groups");
     }
 
     public function ShowMyGroups(): JsonResponse

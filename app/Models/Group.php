@@ -12,6 +12,7 @@ class Group extends Model
     use HasFactory;
     protected $table = "groups";
     protected $fillable = ['id_user','name','type'];
+    protected $hidden = ['pivot'];
 
     public function user()
     {
@@ -37,7 +38,8 @@ class Group extends Model
     public function CheckAnyFilesisBookings(): bool
     {
         $myfiles = $this->files()->pluck("id_file");
-        return User_File::query()->whereIn("id_file",$myfiles)->exists();
+        return User_File::query()->whereNull("deleted_at")
+            ->whereIn("id_file",$myfiles)->exists();
     }
 
     public function addUsers(array $ids_user){
@@ -51,23 +53,33 @@ class Group extends Model
         });
     }
 
-    public function deleteUsers(array $ids_user){
+    public function deleteUsersinGroup(array $ids_user){
+//        DB::transaction(function () use ($ids_user){
+//            foreach ($ids_user as $id){
+//                if (!$this->checkUserBookingFileinGroup($id)){
+//                    $this->users()->detach($id);
+//                }
+//            }
+//        });
         DB::transaction(function () use ($ids_user){
-            foreach ($ids_user as $id){
-                if (!$this->checkUserBookingFileinGroup($id)){
-                    $this->users()->detach($id);
-                }
-            }
+            $myfiles = $this->files()->pluck("id_file");
+            User_File::query()
+                ->whereIn("id_user",$ids_user)
+                ->whereIn("id_file",$myfiles)
+                ->whereNull("deleted_at")
+                ->delete();
         });
     }
 
-    public function checkUserBookingFileinGroup($id_user): bool
-    {
-        $myfiles = $this->files()->pluck("id_file");
-        return User_File::query()
-            ->where("id_user",$id_user)
-            ->whereIn("id_file",$myfiles)->exists();
-    }
+//    public function checkUserBookingFileinGroup($id_user): bool
+//    {
+//        $myfiles = $this->files()->pluck("id_file");
+//        return User_File::query()
+//            ->where("id_user",$id_user)
+//            ->whereIn("id_file",$myfiles)
+//            ->whereNull("deleted_at")
+//            ->exists();
+//    }
 
     public function isPublic(): bool
     {

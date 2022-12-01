@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId("id_user")->constrained("users")->cascadeOnDelete();
             $table->foreignId("id_file")->constrained("files")->cascadeOnDelete();
+            $table->timestamp("deleted_at")->nullable();
             $table->timestamps();
         });
     }

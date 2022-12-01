@@ -19,6 +19,7 @@ Route::prefix("filemanagement")->group(function (){
         Route::controller(GroupController::class)->group(function (){
             Route::get("all","All");
             Route::get("show","ShowMyGroups");
+            Route::get("my-in","ShowGroupsIn");
             Route::get("files/show","ShowFilesGroup");
             Route::post("create","CreateGroup");
             Route::delete("delete","DeleteGroup");

@@ -59,7 +59,7 @@ class ProcessGroupController extends Controller
         $request->validate($this->rules->onlyKey(["id_group","ids_user"],true));
         $group = Group::where("id",$request->id_group)->first();
         $this->authorize("add_delete_users",$group);
-        $group->deleteUsers($request->ids_user);
+        $group->deleteUsersinGroup($request->ids_user);
         return MyApp::Json()->dataHandle("Successfully deleted users From group","message");
     }
 }

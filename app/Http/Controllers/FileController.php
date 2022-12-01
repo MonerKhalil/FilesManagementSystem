@@ -20,8 +20,7 @@ class FileController extends Controller
 
     public function All(): JsonResponse
     {
-        return MyApp::Json()->dataHandle(File::with("userBookings")->get(),"groups");
-
+        return MyApp::Json()->dataHandle(File::with("userBookings")->get(),"files");
     }
 
     public function ShowMyFiles(): JsonResponse

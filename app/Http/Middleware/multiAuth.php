@@ -20,14 +20,13 @@ class multiAuth
      * @return Response|RedirectResponse
      * @throws AuthorizationException
      */
-    public function handle(Request $request, Closure $next,string $Auth): Response|RedirectResponse
+    public function handle(Request $request, Closure $next,string $Auth)
     {
         $user = auth("user")->user();
         if(!is_null($user)){
             if(in_array($user->role,explode('|', $Auth)))
                 return $next($request);
         }
-        echo "aslla1111";
         throw new AccessDeniedHttpException("");
     }
 }

@@ -9,5 +9,5 @@ class User_File extends Model
 {
     use HasFactory;
     protected $table = "user_files";
-    protected $fillable = ['id_user','id_file'];
+    protected $fillable = ['id_user','id_file','deleted_at'];
 }

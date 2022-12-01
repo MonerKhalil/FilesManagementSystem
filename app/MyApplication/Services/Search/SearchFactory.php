@@ -4,30 +4,29 @@ namespace App\MyApplication\Services\Search;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class SearchFactory
+class SearchFactory extends AbstractSearchFactory
 {
-    private ?ISearch $search = null;
-
-    public function createSearchFile(){
-        $this->search = new SearchFile();
-        return $this;
+    protected function createSearchFile():ISearch{
+        return new SearchFile();
     }
-    public function createSearchUser(){
-        $this->search = new SearchUser();
-        return $this;
+    protected function createSearchUser():ISearch{
+        return new SearchUser();
     }
-    public function createSearchGroup(){
-        $this->search = new SearchGroup();
-        return $this;
+    protected function createSearchGroup():ISearch{
+        return new SearchGroup();
     }
 
-    public function getDate(Request $request,?string $name = null,bool $isPageniate = false): JsonResponse
+    public function getDate(Request $request,$type,?string $name = null): JsonResponse
     {
-        if (is_null($this->search)){
-            $this->search = new SearchGroup();
-        }
-        return $this->search->getSearch($request,$name,$isPageniate);
+        $paginate = ($request->has("paginate") && is_bool($request->paginate)) ? $request->paginate : false;
+        return match ($type) {
+            "file"  => $this->createSearchFile()->getSearch($request,$name,$paginate),
+            "user"  => $this->createSearchUser()->getSearch($request,$name,$paginate),
+            "group" => $this->createSearchGroup()->getSearch($request,$name,$paginate),
+            default => throw new NotFoundHttpException(""),
+        };
     }
 
 }
