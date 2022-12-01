@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthenticationController;
+use App\Http\Controllers\BookingFileController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\ProcessGroupController;
@@ -35,11 +36,18 @@ Route::prefix("filemanagement")->group(function (){
             });
         });
     });
-    Route::prefix("file")->controller(FileController::class)->group(function (){
-        Route::get("all","All");
-        Route::get("show","ShowMyFiles");
-        Route::post("create","CreateFile");
-        Route::delete("delete","DeleteFile");
+    Route::prefix("file")->group(function (){
+        Route::controller(FileController::class)->group(function (){
+            Route::get("all","All");
+            Route::get("show","ShowMyFiles");
+            Route::post("create","CreateFile");
+            Route::delete("delete","DeleteFile");
+        });
+        Route::prefix("booking/check")->controller(BookingFileController::class)->group(function (){
+            Route::post("in","CheckIn");
+            Route::delete("out","CheckOut");
+        });
+        Route::post("update",[BookingFileController::class,"UpdateFile"]);
     });
     Route::get("search/{type}",[SearchController::class,"Search"]);
 });
