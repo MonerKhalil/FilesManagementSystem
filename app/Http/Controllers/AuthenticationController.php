@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\MyApplication\MyApp;
 use App\MyApplication\Role;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
@@ -17,7 +18,8 @@ class AuthenticationController extends Controller
         $this->middleware(["auth:user"])->only(["Logout","MyData"]);
     }
 
-    public function MyData(){
+    public function MyData(): JsonResponse
+    {
         return MyApp::Json()->dataHandle(auth()->user(),"user");
     }
 

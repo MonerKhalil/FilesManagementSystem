@@ -57,7 +57,7 @@ class Json
      */
     public function errorHandle(string $name, mixed $messageError,$code = 400): JsonResponse
     {
-        $code = ($code == 0) ? 400 : $code;
+        $code = 400;
         return response()->json([
             "errors" => [
                 $name => $messageError
