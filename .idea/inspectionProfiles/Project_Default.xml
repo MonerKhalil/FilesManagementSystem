@@ -3,6 +3,7 @@
     <option name="myName" value="Project Default" />
     <inspection_tool class="PhpInconsistentReturnPointsInspection" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="PhpOptionalBeforeRequiredParametersInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="PhpPossiblePolymorphicInvocationInspection" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="PhpPropertyOnlyWrittenInspection" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="PhpPureAttributeCanBeAddedInspection" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="PhpUndefinedFieldInspection" enabled="false" level="WARNING" enabled_by_default="false" />
@@ -14,5 +15,6 @@
       <option name="processComments" value="true" />
     </inspection_tool>
     <inspection_tool class="UnknownColumnInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="UnknownTableOrViewInspection" enabled="false" level="WARNING" enabled_by_default="false" />
   </profile>
 </component>

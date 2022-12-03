@@ -10,12 +10,12 @@ class File extends Model
 {
     use HasFactory;
     protected $table = "files";
-    protected $fillable = ['id_user','name','path'];
-    protected $hidden = ['pivot'];
+    protected $fillable = ['name','path'];
+    protected $hidden = ['pivot','id_user'];
 
     public function user()
     {
-        return $this->belongsTo(User::class,"id_user","id")->withDefault();
+        return $this->belongsTo(User::class,"id_user","id")->select(["users.id","users.name"])->withDefault();
     }
 
     public function userBookings(){

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\File;
+use App\Models\User_File;
 use App\MyApplication\MyApp;
 use App\MyApplication\Services\FileRuleValidation;
 use Illuminate\Http\JsonResponse;
@@ -18,9 +19,29 @@ class FileController extends Controller
         $this->rules = new FileRuleValidation();
     }
 
+    public function ReportFile(Request $request){
+        $request->validate($this->rules->onlyKey(["id_file"],true));
+        $file = File::with(["user"])
+            ->where("files.id",$request->id_file)
+            ->first();
+        $report = User_File::query()
+            ->select([
+                "user_files.id_user as id_user_booking"
+                ,"users.name as name_user_booking","user_files.created_at as booking_date"
+                ,"user_files.deleted_at as unBooking_date"
+            ])
+            ->where("id_file",$file->id)
+            ->join("users","users.id","=","id_user")
+            ->orderBy("booking_date","desc")
+            ->get();
+        $this->authorize("is_owner_file",$file);
+        $file->reports = $report;
+        return $file;
+    }
+
     public function All(): JsonResponse
     {
-        return MyApp::Json()->dataHandle(File::with("userBookings")->get(),"files");
+        return MyApp::Json()->dataHandle(File::with(["user","userBookings"])->get(),"files");
     }
 
     public function ShowMyFiles(): JsonResponse

@@ -12,11 +12,11 @@ class Group extends Model
     use HasFactory;
     protected $table = "groups";
     protected $fillable = ['id_user','name','type'];
-    protected $hidden = ['pivot'];
+    protected $hidden = ['pivot','id_user'];
 
     public function user()
     {
-        return $this->belongsTo(User::class,"id_user","id");
+        return $this->belongsTo(User::class,"id_user","id")->select(["users.id","users.name"])->withDefault();
     }
     public function users(){
         return $this->belongsToMany(User::class,"group_users",

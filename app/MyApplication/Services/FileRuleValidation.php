@@ -18,6 +18,7 @@ class FileRuleValidation extends RuleValidate
             "id_group" => ["required","numeric",Rule::exists("groups","id")],
             "id_file" => ["required","numeric",Rule::exists("files","id")],
             "ids_user" => ["required","array"],
+            "ids_user.*" => ["numeric",Rule::exists("users","id")]
         ];
     }
 }

@@ -32,4 +32,11 @@ class FilePolicy
         return $this->is_owner_file($user,$file);
     }
 
+    public function check_in_file(User $user,File $file): bool
+    {
+        $groups = $file->groups()->pluck("groups.id");
+        $useringroup = $user->userGroups()->whereIn("groups.id",$groups)->exists();
+        return $useringroup || $this->is_owner_file($user,$file);
+    }
+
 }

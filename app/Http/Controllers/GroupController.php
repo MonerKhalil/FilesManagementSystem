@@ -20,12 +20,13 @@ class GroupController extends Controller
 
     public function All(): JsonResponse
     {
-        return MyApp::Json()->dataHandle(Group::all(),"groups");
+        return MyApp::Json()->dataHandle(Group::with("user")->get(),"groups");
     }
 
     public function ShowGroupsIn(): JsonResponse
     {
-        return MyApp::Json()->dataHandle(User::where("id",auth()->id())->first()->userGroups,"groups");
+        return MyApp::Json()->dataHandle(User::where("id",auth()->id())->first()
+            ->userGroups()->with("user")->get(),"groups");
     }
 
     public function ShowMyGroups(): JsonResponse
@@ -37,7 +38,7 @@ class GroupController extends Controller
     {
         $request->validate($this->rules->onlyKey(["id_group"]));
         $group = Group::with(["files"=>function($q){
-            return $q->with("userBookings")->get();
+            return $q->with(["user","userBookings"])->get();
         },])->where("id",$request->id_group)->first();
         $this->authorize("show_files_in_group",$group);
         return MyApp::Json()->dataHandle($group,"group");
