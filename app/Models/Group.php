@@ -24,7 +24,7 @@ class Group extends Model
             "id_user",
             "id",
             "id"
-        );
+        )->withTimestamps();
     }
     public function files(){
         return $this->belongsToMany(File::class,"group_files",
@@ -32,7 +32,7 @@ class Group extends Model
             "id_file",
             "id",
             "id"
-        );
+        )->withTimestamps();
     }
 
     public function CheckAnyFilesisBookings(): bool

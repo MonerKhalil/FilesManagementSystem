@@ -38,7 +38,7 @@ class User extends Authenticatable
             "id_file",
             "id",
             "id"
-        );
+        )->withTimestamps();
     }
 
     public function userGroups(){
@@ -47,7 +47,7 @@ class User extends Authenticatable
             "id_group",
             "id",
             "id"
-        );
+        )->withTimestamps();
     }
 
     public function isAdmin(): bool

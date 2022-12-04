@@ -24,7 +24,7 @@ class File extends Model
             "id_user",
             "id",
             "id"
-        )->select(["users.id","users.name"])->whereNull("user_files.deleted_at");
+        )->withTimestamps()->select(["users.id","users.name"])->whereNull("user_files.deleted_at");
     }
 
     public function groups(){
@@ -33,7 +33,7 @@ class File extends Model
             "id_group",
             "id",
             "id"
-        );
+        )->withTimestamps();
     }
 
     public function CheckisBooking(): bool
