@@ -33,7 +33,7 @@ class BookingFileController extends Controller
         foreach ($files as $file){
             if ($file->CheckisBooking()){
                 DB::rollBack();
-                return MyApp::Json()->errorHandle("file","you can't Check-in file [ $file->name ]becouse it was already booked .");
+                return MyApp::Json()->errorHandle("file","you can't Check-in file [ $file->name ] becouse it was already booked .");
             }
             if (!$user->can("check_in_file",$file)){
                 DB::rollBack();
@@ -58,10 +58,5 @@ class BookingFileController extends Controller
             return MyApp::Json()->dataHandle("Successfully Check-out file .","message");
         }
         return MyApp::Json()->errorHandle("file","you can't Check-out file becouse you do not Check-in .");
-    }
-
-    public function UpdateFile(Request $request){
-        $request->validate($this->rules->onlyKey(["file","id_file"],true));
-
     }
 }

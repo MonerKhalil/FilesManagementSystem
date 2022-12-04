@@ -19,24 +19,26 @@ class FileController extends Controller
         $this->rules = new FileRuleValidation();
     }
 
-    public function ReportFile(Request $request){
+    public function ReportFile(Request $request): JsonResponse
+    {
         $request->validate($this->rules->onlyKey(["id_file"],true));
         $file = File::with(["user"])
             ->where("files.id",$request->id_file)
             ->first();
+        $this->authorize("is_owner_file",$file);
         $report = User_File::query()
             ->select([
-                "user_files.id_user as id_user_booking"
-                ,"users.name as name_user_booking","user_files.created_at as booking_date"
-                ,"user_files.deleted_at as unBooking_date"
+                "user_files.id_user as id_user_booking",
+                "users.name as name_user_booking",
+                "user_files.created_at as booking_date",
+                "user_files.deleted_at as unbooking_date"
             ])
             ->where("id_file",$file->id)
             ->join("users","users.id","=","id_user")
             ->orderBy("booking_date","desc")
             ->get();
-        $this->authorize("is_owner_file",$file);
-        $file->reports = $report;
-        return $file;
+        $file->report = $report;
+        return MyApp::Json()->dataHandle($file,"file");
     }
 
     public function All(): JsonResponse
@@ -69,11 +71,37 @@ class FileController extends Controller
             }catch (\Exception $e){
                 MyApp::uploadFile()->rollBackUpload();
                 DB::rollBack();
-                throw new \Exception($e->getMessage(),$e->getCode());
+                throw new \Exception($e->getMessage());
             }
         }else{
-            return MyApp::Json()->errorHandle("file",$file->getError(),$file->getError());
+            return MyApp::Json()->errorHandle("file",$file->getErrorMessage());
         }
+    }
+
+    public function UpdateFile(Request $request): JsonResponse
+    {
+        $request->validate($this->rules->onlyKey(["file","id_file"],true));
+        $file = File::with("user")->where("id",$request->id_file)->first();
+        $oldPath = $file->path;
+        $this->authorize("update_file",$file);
+        $newFile = $request->file("file");
+        if ($newFile->isValid()){
+            try {
+                DB::beginTransaction();
+                $newPath = MyApp::uploadFile()->upload($newFile);
+                $file->update([
+                    "path" => $newPath,
+                ]);
+                MyApp::uploadFile()->deleteFile($oldPath);
+                DB::commit();
+                return MyApp::Json()->dataHandle("Successfully updated file.","message");
+            }catch (\Exception $e){
+                MyApp::uploadFile()->rollBackUpload();
+                DB::rollBack();
+                throw new \Exception($e->getMessage(),$e->getCode());
+            }
+        }
+        return MyApp::Json()->errorHandle("file",$newFile->getErrorMessage());
     }
 
     public function DeleteFile(Request $request): JsonResponse
@@ -89,7 +117,7 @@ class FileController extends Controller
         $file->delete();
         if (MyApp::uploadFile()->deleteFile($temp_path)){
             DB::commit();
-            return MyApp::Json()->dataHandle("Successfully deleted file","message");
+            return MyApp::Json()->dataHandle("Successfully deleted file .","message");
         }
         DB::rollBack();
         return MyApp::Json()->errorHandle("file","the File current is not deleted .");

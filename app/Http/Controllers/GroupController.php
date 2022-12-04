@@ -8,6 +8,7 @@ use App\MyApplication\MyApp;
 use App\MyApplication\Services\GroupRuleValidation;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class GroupController extends Controller
 {
@@ -32,6 +33,21 @@ class GroupController extends Controller
     public function ShowMyGroups(): JsonResponse
     {
         return MyApp::Json()->dataHandle(Group::where("id_user",auth()->id())->get(),"groups");
+    }
+
+    public function AccessibleGroups(): JsonResponse
+    {
+        $id_user = auth()->id();
+        $groups = Group::with("user")
+            ->where("id_user",$id_user)
+            ->orWhere("name","public")
+            ->orWhere("type","public")
+            ->orWhereIn("id",function ($q)use ($id_user){
+                return $q->select("group_users.id_group")
+                ->from("group_users")->where("group_users.id_user",$id_user)->pluck("id_group");
+            })
+            ->get();
+        return MyApp::Json()->dataHandle($groups,"groups");
     }
 
     public function ShowFilesGroup(Request $request): JsonResponse

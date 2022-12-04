@@ -21,10 +21,12 @@ Route::prefix("filemanagement")->group(function (){
             Route::get("all","All");
             Route::get("show","ShowMyGroups");
             Route::get("my-in","ShowGroupsIn");
+            Route::get("access","AccessibleGroups");
             Route::get("files/show","ShowFilesGroup");
             Route::post("create","CreateGroup");
             Route::delete("delete","DeleteGroup");
         });
+
         Route::controller(ProcessGroupController::class)->group(function (){
             Route::prefix("file")->group(function (){
                 Route::post("add","AddFiletoGroup");
@@ -42,13 +44,14 @@ Route::prefix("filemanagement")->group(function (){
             Route::get("report","ReportFile");
             Route::get("show","ShowMyFiles");
             Route::post("create","CreateFile");
+            Route::post("update","UpdateFile");
             Route::delete("delete","DeleteFile");
         });
+
         Route::prefix("booking/check")->controller(BookingFileController::class)->group(function (){
             Route::post("in","CheckIn");
             Route::delete("out","CheckOut");
         });
-        Route::post("update",[BookingFileController::class,"UpdateFile"]);
     });
     Route::get("search/{type}",[SearchController::class,"Search"]);
 });

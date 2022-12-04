@@ -39,4 +39,10 @@ class FilePolicy
         return $useringroup || $this->is_owner_file($user,$file);
     }
 
+    public function update_file(User $user,File $file): bool
+    {
+        return $this->is_owner_file($user,$file)
+            || $file->userBookings()->where("user_files.id_user",$user->id)->exists();
+    }
+
 }

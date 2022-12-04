@@ -10,7 +10,7 @@ class File extends Model
 {
     use HasFactory;
     protected $table = "files";
-    protected $fillable = ['name','path'];
+    protected $fillable = ['id_user','name','path'];
     protected $hidden = ['pivot','id_user'];
 
     public function user()

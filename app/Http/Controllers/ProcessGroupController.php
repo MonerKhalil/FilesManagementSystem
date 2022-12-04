@@ -36,13 +36,14 @@ class ProcessGroupController extends Controller
     {
         $request->validate($this->rules->onlyKey(["id_group","id_file"],true));
         $file = File::where("id",$request->id_file)->first();
-        $this->authorize("is_owner_file",$file);
-//        $group = Group::query()->where("id",$request->id_group)->first();
-//        $this->authorize("add_file_to_group",$group);
-        DB::transaction(function () use ($file,$request){
-            $file->groups()->detach($request->id_group);
-        });
-        return MyApp::Json()->dataHandle("Successfully delete file From group","message");
+        $group = Group::query()->where("id",$request->id_group)->first();
+        if (auth()->user()->can("is_owner_file",$file) || auth()->user()->can("is_owner_group",$group)){
+            DB::transaction(function () use ($file,$request){
+                $file->groups()->detach($request->id_group);
+            });
+            return MyApp::Json()->dataHandle("Successfully delete file From group","message");
+        }
+        throw new AccessDeniedHttpException();
     }
 
     public function AddUserstoGroup(Request $request): JsonResponse
@@ -59,7 +60,9 @@ class ProcessGroupController extends Controller
         $request->validate($this->rules->onlyKey(["id_group","ids_user"],true));
         $group = Group::where("id",$request->id_group)->first();
         $this->authorize("add_delete_users",$group);
-        $group->deleteUsersinGroup($request->ids_user);
-        return MyApp::Json()->dataHandle("Successfully deleted users From group","message");
+        if ($group->deleteUsersinGroup($request->ids_user)){
+            return MyApp::Json()->dataHandle("Successfully deleted users From group","message");
+        }
+        return MyApp::Json()->errorHandle("user","Users cannot be removed from the group because one of them has a file block within the group");
     }
 }

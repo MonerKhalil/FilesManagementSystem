@@ -43,43 +43,26 @@ class Group extends Model
     }
 
     public function addUsers(array $ids_user){
-//        foreach ($ids_user as $id){
-//            if (User::query()->where("id",$id)->exists()){
-//                $this->users()->syncWithoutDetaching($id);
-//            }
-//        }
         DB::transaction(function () use ($ids_user){
             $this->users()->syncWithoutDetaching($ids_user);
         });
     }
 
-    public function deleteUsersinGroup(array $ids_user){
-//        DB::transaction(function () use ($ids_user){
-//            foreach ($ids_user as $id){
-//                if (!$this->checkUserBookingFileinGroup($id)){
-//                    $this->users()->detach($id);
-//                }
-//            }
-//        });
-        DB::transaction(function () use ($ids_user){
-            $myfiles = $this->files()->pluck("id_file");
-            User_File::query()
-                ->whereIn("id_user",$ids_user)
-                ->whereIn("id_file",$myfiles)
-                ->whereNull("deleted_at")
-                ->delete();
-        });
+    public function deleteUsersinGroup(array $ids_user): bool
+    {
+        $myfiles = $this->files()->pluck("id_file");
+        if (!User_File::query()
+            ->whereIn("id_user",$ids_user)
+            ->whereIn("id_file",$myfiles)
+            ->whereNull("deleted_at")
+            ->exists()){
+            DB::transaction(function () use ($ids_user){
+                $this->users()->detach($ids_user);
+            });
+            return true;
+        }
+        return false;
     }
-
-//    public function checkUserBookingFileinGroup($id_user): bool
-//    {
-//        $myfiles = $this->files()->pluck("id_file");
-//        return User_File::query()
-//            ->where("id_user",$id_user)
-//            ->whereIn("id_file",$myfiles)
-//            ->whereNull("deleted_at")
-//            ->exists();
-//    }
 
     public function isPublic(): bool
     {
