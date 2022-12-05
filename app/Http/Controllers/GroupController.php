@@ -55,7 +55,7 @@ class GroupController extends Controller
         $request->validate($this->rules->onlyKey(["id_group"]));
         $group = Group::with(["files"=>function($q){
             return $q->with(["user","userBookings"])->get();
-        },])->where("id",$request->id_group)->first();
+        },"user"])->where("id",$request->id_group)->first();
         $this->authorize("show_files_in_group",$group);
         return MyApp::Json()->dataHandle($group,"group");
     }
