@@ -38,9 +38,13 @@ class GroupPolicy
         return $this->is_owner_group($user,$group) || $this->user_in_group($user,$group) || $group->isPublic();
     }
 
-    public function add_delete_users(User $user,Group $group): bool
+    public function add_users(User $user,Group $group): bool
     {
         return ($user->id === $group->id_user) || ($user->isAdmin()) || $group->isPublic();
+    }
+    public function delete_users(User $user,Group $group): bool
+    {
+        return ($user->id === $group->id_user) || ($user->isAdmin());
     }
 
     public function delete_group(User $user,Group $group): bool

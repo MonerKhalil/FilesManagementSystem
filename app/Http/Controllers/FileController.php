@@ -65,7 +65,7 @@ class FileController extends Controller
                     "name" => strtolower($request->name),
                     "path" => $path,
                 ]);
-                $fileAdded->groups()->syncWithoutDetaching($request->id_groupe);
+                $fileAdded->groups()->syncWithoutDetaching($request->id_group);
                 DB::commit();
                 return MyApp::Json()->dataHandle($fileAdded,"file");
             }catch (\Exception $e){

@@ -35,7 +35,9 @@ class FilePolicy
     public function check_in_file(User $user,File $file): bool
     {
         $groups = $file->groups()->pluck("groups.id");
-        $useringroup = $user->userGroups()->whereIn("groups.id",$groups)->exists();
+        $useringroup = $user->userGroups()->whereIn("groups.id",$groups)
+            ->orWhere("groups.type","public")
+            ->exists();
         return $useringroup || $this->is_owner_file($user,$file);
     }
 
