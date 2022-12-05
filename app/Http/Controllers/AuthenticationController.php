@@ -56,9 +56,9 @@ class AuthenticationController extends Controller
         if (password_verify($request->password,$user->password)){
             return MyApp::Json()->dataHandle($user->getWithNewToken(),"user");
         }
-        return MyApp::Json()->errorHandle("Validation",[
-            "password" => "the password is not valid",
-        ]);
+        $password = new class{};
+        $password->password = ["the password is not valid"];
+        return MyApp::Json()->errorHandle("Validation",$password);
     }
 
     public function Logout()
