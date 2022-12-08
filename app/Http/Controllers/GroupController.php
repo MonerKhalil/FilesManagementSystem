@@ -60,6 +60,14 @@ class GroupController extends Controller
         return MyApp::Json()->dataHandle($group,"group");
     }
 
+    public function ShowUsersGroup(Request $request): JsonResponse
+    {
+        $request->validate($this->rules->onlyKey(["id_group"]));
+        return MyApp::Json()->dataHandle(Group::with(["user","users"])
+            ->where("id",$request->id_group)
+            ->first(),"group");
+    }
+
     public function CreateGroup(Request $request): JsonResponse
     {
         $request->validate($this->rules->except(["id_group"],true));

@@ -11,11 +11,11 @@ use Illuminate\Support\Facades\Route;
 Route::prefix("filemanagement")->group(function (){
     Route::prefix("auth")->controller(AuthenticationController::class)->group(function (){
         Route::get("user","MyData");
+        Route::get("users","Users");
         Route::post("register","Register");
         Route::post("login","Login");
         Route::delete("logout","Logout");
     });
-
     Route::prefix("group")->group(function (){
         Route::controller(GroupController::class)->group(function (){
             Route::get("all","All");
@@ -23,6 +23,7 @@ Route::prefix("filemanagement")->group(function (){
             Route::get("my-in","ShowGroupsIn");
             Route::get("access","AccessibleGroups");
             Route::get("files/show","ShowFilesGroup");
+            Route::get("users/show","ShowUsersGroup");
             Route::post("create","CreateGroup");
             Route::delete("delete","DeleteGroup");
         });

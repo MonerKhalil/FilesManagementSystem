@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\MyApplication\Role;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
@@ -16,7 +17,10 @@ class Group extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class,"id_user","id")->select(["users.id","users.name"])->withDefault();
+        return $this->belongsTo(User::class,"id_user","id")
+            ->select(["users.id","users.name"])
+//            ->whereNot("users.role",Role::Admin->value)
+            ->withDefault();
     }
     public function users(){
         return $this->belongsToMany(User::class,"group_users",
@@ -24,7 +28,7 @@ class Group extends Model
             "id_user",
             "id",
             "id"
-        )->withTimestamps();
+        )->withTimestamps()->whereNot("users.role",Role::Admin->value);
     }
     public function files(){
         return $this->belongsToMany(File::class,"group_files",

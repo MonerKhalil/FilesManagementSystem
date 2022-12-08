@@ -5,6 +5,7 @@ namespace App\MyApplication;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 
 class Json
@@ -46,7 +47,9 @@ class Json
      */
     public function dataHandle(mixed $data , string $name = null): JsonResponse
     {
-        return !is_null($name) ? response()->json(['data'=>[$name => $data]]) : response()->json(["data"=>$data]);
+        $response = !is_null($name) ? response()->json(['data'=>[$name => $data]]) : response()->json(["data"=>$data]);
+        Log::channel("log")->info("the Response is : ".$response);
+        return $response;
     }
 
     /**
