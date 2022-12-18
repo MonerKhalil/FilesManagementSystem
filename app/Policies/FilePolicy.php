@@ -46,5 +46,10 @@ class FilePolicy
         return $this->is_owner_file($user,$file)
             || $file->userBookings()->where("user_files.id_user",$user->id)->exists();
     }
+    
+    public function read_file(User $user,File $file): bool
+    {
+        return $this->update_file($user,$file) || $file->userBookings()->count()==0;
+    }
 
 }

@@ -15,7 +15,7 @@ class AuthenticationController extends Controller
     public function __construct()
     {
         $this->middleware(["admin.guest"])->only("Register");
-        $this->middleware(["auth:user"])->only(["Users","Logout","MyData"]);
+        $this->middleware(["auth:user"])->only(["Logout","MyData"]);
     }
 
     public function Users(): JsonResponse

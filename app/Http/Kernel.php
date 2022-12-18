@@ -4,6 +4,8 @@ namespace App\Http;
 
 use App\Http\Middleware\adminOrguest;
 use App\Http\Middleware\LogRequest;
+use App\Http\Middleware\MaxFiles;
+use App\Http\Middleware\multiAuth;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -65,8 +67,9 @@ class Kernel extends HttpKernel
         'signed' => \App\Http\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
-        'multi.auth' => \App\Http\Middleware\multiAuth::class,
+        'multi.auth' => multiAuth::class,
         'admin.guest' => adminOrguest::class,
+        'max.files' => MaxFiles::class,
         'log' => LogRequest::class
     ];
 }

@@ -8,6 +8,10 @@ use App\Http\Controllers\ProcessGroupController;
 use App\Http\Controllers\SearchController;
 use Illuminate\Support\Facades\Route;
 
+Route::get("",function(){
+    return "sakmkmas";
+});
+
 Route::prefix("filemanagement")->group(function (){
     Route::prefix("auth")->controller(AuthenticationController::class)->group(function (){
         Route::get("user","MyData");
@@ -44,6 +48,7 @@ Route::prefix("filemanagement")->group(function (){
             Route::get("all","All");
             Route::get("report","ReportFile");
             Route::get("show","ShowMyFiles");
+            Route::get("read","DownloadFile");
             Route::post("create","CreateFile");
             Route::post("update","UpdateFile");
             Route::delete("delete","DeleteFile");

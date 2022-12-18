@@ -2,6 +2,7 @@
 
 namespace App\MyApplication;
 
+use Illuminate\Support\Facades\Response;
 
 class UploadFile
 {
@@ -12,8 +13,8 @@ class UploadFile
     public function __construct()
     {
         $this->disks = [
-            "files" => "Uploads/files",
-            "images" => "Uploads/images"
+            "files" => "app/public/Uploads/files",
+            "images" => "app/public/Uploads/images"
         ];
         $this->fileName = null;
     }
@@ -48,8 +49,8 @@ class UploadFile
 
     public function deleteFile(string $path): bool
     {
-        if (file_exists(public_path($path))){
-            unlink(public_path($path));
+        if (file_exists(storage_path($path))){
+            unlink(storage_path($path));
             return true;
         }
         return false;
@@ -61,4 +62,8 @@ class UploadFile
         $this->fileName = null;
     }
 
+    public function DownloadFile($path)
+    {
+        return Response::download(storage_path($path));
+    }
 }

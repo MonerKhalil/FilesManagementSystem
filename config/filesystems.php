@@ -30,13 +30,23 @@ return [
 
     'disks' => [
 
+        // 'files' => [
+        //     'driver' => 'local',
+        //     'root' => public_path('Uploads/files'),
+        // ],
+        // 'images' => [
+        //     'driver' => 'local',
+        //     'root' => public_path('Uploads/images'),
+        // ],
         'files' => [
             'driver' => 'local',
-            'root' => public_path('Uploads/files'),
+            'root' => storage_path('app/public/Uploads/files'),
+            'throw' => false,
         ],
         'images' => [
             'driver' => 'local',
-            'root' => public_path('Uploads/images'),
+            'root' => storage_path('app/public/Uploads/images'),
+            'throw' => false,
         ],
 
         'local' => [

@@ -61,10 +61,12 @@ class Json
     public function errorHandle(string $name, mixed $messageError,$code = 400): JsonResponse
     {
         $code = 400;
-        return response()->json([
+        $response = response()->json([
             "errors" => [
                 $name => $messageError
             ]
         ],$code);
+        Log::channel("log")->info("the Error is : ".$response);
+        return $response;
     }
 }

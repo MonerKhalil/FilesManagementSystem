@@ -16,7 +16,15 @@ class FileController extends Controller
     {
         $this->middleware(["auth:user"]);
         $this->middleware(["multi.auth:admin"])->only("All");
+        $this->middleware(["max.files"])->only("CreateFile");
         $this->rules = new FileRuleValidation();
+    }
+
+    public function DownloadFile(Request $request){
+        $request->validate($this->rules->onlyKey(["id_file"],true));
+        $file = File::query()->where("id",$request->id_file)->first();
+        $this->authorize("read_file",$file);
+        return MyApp::uploadFile()->DownloadFile($file->path);
     }
 
     public function ReportFile(Request $request): JsonResponse
