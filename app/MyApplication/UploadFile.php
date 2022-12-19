@@ -64,6 +64,11 @@ class UploadFile
 
     public function DownloadFile($path)
     {
-        return Response::download(storage_path($path));
+        // dd(response()->file(storage_path($path)));
+        // $headers = array('Content-Type'=>'application/octet-stream',);
+        // dd(Response::download(storage_path($path,$headers)));
+        $file = response()->download(storage_path($path));
+        ob_end_clean();
+        return $file;
     }
 }

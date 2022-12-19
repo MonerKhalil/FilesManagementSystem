@@ -14,16 +14,19 @@ class FileController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(["auth:user"]);
+        // $this->middleware(["auth:user"]);
         $this->middleware(["multi.auth:admin"])->only("All");
         $this->middleware(["max.files"])->only("CreateFile");
         $this->rules = new FileRuleValidation();
     }
 
     public function DownloadFile(Request $request){
+        echo "msamsaamskmsa";
         $request->validate($this->rules->onlyKey(["id_file"],true));
         $file = File::query()->where("id",$request->id_file)->first();
-        $this->authorize("read_file",$file);
+// dd($file);
+//        dd($file->path);
+        // $this->authorize("read_file",$file);
         return MyApp::uploadFile()->DownloadFile($file->path);
     }
 
