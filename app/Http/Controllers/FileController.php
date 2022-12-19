@@ -14,7 +14,7 @@ class FileController extends Controller
 {
     public function __construct()
     {
-        // $this->middleware(["auth:user"]);
+        $this->middleware(["auth:user"]);
         $this->middleware(["multi.auth:admin"])->only("All");
         $this->middleware(["max.files"])->only("CreateFile");
         $this->rules = new FileRuleValidation();
@@ -26,7 +26,7 @@ class FileController extends Controller
         $file = File::query()->where("id",$request->id_file)->first();
 // dd($file);
 //        dd($file->path);
-        // $this->authorize("read_file",$file);
+        $this->authorize("read_file",$file);
         return MyApp::uploadFile()->DownloadFile($file->path);
     }
 
